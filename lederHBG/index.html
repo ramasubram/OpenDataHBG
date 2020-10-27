@@ -1,0 +1,39 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+        <title>Helsingborg Leder</title>
+        <script src ="script.js" defer></script>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIwzALxUPNbatRBj3Xi1Uhp0fFzwWNBkE&callback=initMap&libraries=&v=weekly" defer></script>
+        <style>
+            body {
+                width: 70%;
+                margin: 20px;
+                padding: 10px;
+                box-sizing: border-box;
+                font-family: 'Roboto', sans-serif;
+                height: 100%;
+                position: relative;
+            }
+            
+            .mainContainer {
+                background-color: GAINSBORO;
+                border: 5px solid blue;
+                flex-wrap: wrap;
+                margin: 20px;
+            }
+            canvas { 
+                border : 2px solid black;
+                color: grey;
+                width: 300;
+                height: 200;
+            }
+        </style>
+    </head>
+    <body>
+        <div id = "root"></div>
+        <div id="map_canvas" style="width:100%; height:100%"></div> 
+        <canvas id="canvas" width =300 height = 200></canvas>
+    </body>
+</html>
