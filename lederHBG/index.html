@@ -5,6 +5,7 @@
         <title>Helsingborg Leder</title>
         <script src ="script.js" defer></script>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIwzALxUPNbatRBj3Xi1Uhp0fFzwWNBkE&callback=initMap&libraries=&v=weekly" defer></script>
         <style>
             body {
@@ -37,15 +38,16 @@
                 background-color: GAINSBORO;
                 border : 2px solid black;
                 margin: 10px;
-                height: 500px;
-                width: 50%;
+                height: 500;
+                width: 600;
                 left:30%;
                 right: 5%;
                 display: inline-block;
                 position: absolute;
             }
-            canvas { 
+            .canvas1 { 
                 border : 2px solid black;
+                display: inline;
                 color: grey;
                 width: 300px;
                 height: 200px;
@@ -54,6 +56,6 @@
     </head>
     <body>
         <div id = "root"></div>
-        <canvas id="canvas"></canvas>
+<!--        <canvas id="canvas"></canvas>-->
     </body>
 </html>

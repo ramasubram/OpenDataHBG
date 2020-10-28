@@ -1,6 +1,6 @@
 
 const app = document.getElementById('root');
-var lat, long;
+var lat, long, canvas;
 var request = new XMLHttpRequest();
 request.open('GET', 'https://helsingborg.opendatasoft.com/api/records/1.0/search/?dataset=leder&q=&facet=lednamn', true);
 
@@ -31,9 +31,13 @@ request.onload = function() {
             btn.addEventListener("click", () => {
                 lat = item.fields.geo_point_2d[0];
                 long =  item.fields.geo_point_2d[1];
-                console.log("1",lat,long);
-//                ctx = canvas.getContext("2d");
-//                showMapLoc();
+
+                canvas = document.createElement('canvas');
+                canvas.setAttribute('id', 'canvas');
+                canvas.setAttribute('class', 'canvas1');
+                mapDiv.appendChild(canvas);
+                ctx = canvas.getContext("2d");
+                showMapLoc();
                 drawShape(item.fields.geo_shape.coordinates);
             });
             // end - define event for button
@@ -69,7 +73,7 @@ function showMapLoc() {
         zoom: 15,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-    console.log("2",lat,long);
+
     var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 }
 
@@ -82,30 +86,26 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     );
     infoWindow.open(map);
 }
-function drawShape(coords) {
-  console.log("Inside Draw Shape");
+function drawShape(shapeCoords) {
+  const map = new google.maps.Map(document.getElementById("map_canvas"), {
+    zoom: 15,
+    center: new google.maps.LatLng(lat, long),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
 
-  var bounds = new google.maps.LatLngBounds();
-  for (var i = 0; i < coords.length; i++) {
-    console.log("The coords are",coords);
-    var polygonCoords = [];
-    for (var j = 0; j < coords[i].length; j++) {
-      console.log(coords[i][j][1], coords[i][j][0]);
-      var pt = new google.maps.LatLng(coords[i][j][1], coords[i][j][0]);
-      bounds.extend(pt);
+  var polygonCoords = [];
+  for (var i = 0; i < shapeCoords.length; i++) {
+      var pt = {lat: shapeCoords[i][1], lng: shapeCoords[i][0]};
       polygonCoords.push(pt);
     }
-    // Construct the polygon.
-    var polygon = new google.maps.Polygon({
-      paths: polygonCoords,
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#FF0000',
-      fillOpacity: 0.35,
-      map: map
-    });
-  }
-  map.fitBounds(bounds);
+  // Construct the polygon.
+  const shape = new google.maps.Polygon({
+    paths: polygonCoords,
+    strokeColor: "#FF0000",
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: "#FF0000",
+    fillOpacity: 0.35
+  });
+  shape.setMap(map);
 }
-
