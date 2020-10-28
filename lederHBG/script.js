@@ -1,10 +1,6 @@
-const p2="";
 
 const app = document.getElementById('root');
-const container = document.createElement('div');
-container.setAttribute('class', 'container');
-app.appendChild(container);
-
+var lat, long;
 var request = new XMLHttpRequest();
 request.open('GET', 'https://helsingborg.opendatasoft.com/api/records/1.0/search/?dataset=leder&q=&facet=lednamn', true);
 
@@ -12,18 +8,20 @@ request.onload = function() {
     let dataset = JSON.parse(this.response);
 
     if (request.status >= 200 && request.status < 400) {
+        // create div element to contain the trail list
+        const mainDiv = document.createElement('div');
+        const mapDiv = document.createElement('div');
+        mainDiv.setAttribute('class', 'main_container');
+        mapDiv.setAttribute('class', 'map_container');
+        mapDiv.setAttribute('id', 'map_canvas');
+        app.appendChild(mainDiv);
+        app.appendChild(mapDiv);
         dataset.records.forEach(item => {
-            // create div for each item in the dataset
-            const maindiv = document.createElement('div');
-            maindiv.setAttribute('class', 'mainContainer');
-
-            const h2 = document.createElement('h2');
-            h2.style.color = "blue";
-            h2.textContent = "Namn : ";
-
-
-            container.appendChild(maindiv);
-            maindiv.appendChild(h2);
+            // create button element for each trail
+            const h3 = document.createElement('h3');
+            h3.style.color = "blue";
+            h3.textContent = "Leden Namn: ";
+            mainDiv.appendChild(h3);
 
             // Create a <button> element with lednamn
             var btn = document.createElement("button");
@@ -31,47 +29,15 @@ request.onload = function() {
 
             // start - define event for button
             btn.addEventListener("click", () => {
-                showMapLoc(item.fields.geo_point_2d[0], item.fields.geo_point_2d[1]);
-                ctx = canvas.getContext("2d");
-
-                var minX,minY,maxX,maxY; 
-                item.fields.geo_shape.coordinates.forEach((p,i) => {
-                    if(i === 0){ // if first point 
-                        minX = maxX = p[0];
-                        minY = maxY = p[1]; 
-                    }else{
-                        minX = Math.min(p[0],minX);
-                        minY = Math.min(p[1],minY);
-                        maxX = Math.max(p[0],maxX);
-                        maxY = Math.max(p[1],maxY);
-                    }
-                });
-
-                // get the map width and heigth in its local coords
-                const mapWidth = maxX-minX;
-                const mapHeight = maxY-minY;
-                const mapCenterX = (maxX + minX) /2;
-                const mapCenterY = (maxY + minY) /2;
-                console.log(ctx.canvas.width, ctx.canvas.height, mapWidth, mapHeight); 
-
-                // to find the scale that will fit the canvas get the min scale to fit height or width
-                const scale = Math.min(ctx.canvas.width / mapWidth,ctx.canvas.height / mapHeight);
-
-                console.log(scale);
-                // draw the map centered on the cavas
-                ctx.beginPath();
-                ctx.strokeStyle = 'blue';
-
-                item.fields.geo_shape.coordinates.forEach(p => { 
-                    ctx.lineTo(
-                        (p[0] - mapCenterX) * scale + ctx.canvas.width /2 ,
-                        (p[1] - mapCenterY) * scale + ctx.canvas.height / 2 
-                    );
-                });
-                ctx.stroke();
+                lat = item.fields.geo_point_2d[0];
+                long =  item.fields.geo_point_2d[1];
+                console.log("1",lat,long);
+//                ctx = canvas.getContext("2d");
+//                showMapLoc();
+                drawShape(item.fields.geo_shape.coordinates);
             });
             // end - define event for button
-            h2.appendChild(btn);        
+            h3.appendChild(btn);        
         });
     }
     else{
@@ -89,7 +55,7 @@ function initMap() {
         (position) => {
             lat = position.coords.latitude;
             long = position.coords.longitude;
-            showMapLoc(lat, long);
+            showMapLoc();
         });
     } else {
         // Browser doesn't support Geolocation
@@ -97,12 +63,13 @@ function initMap() {
     }
 }
 
-function showMapLoc(lat, long) {
+function showMapLoc() {
     var myOptions = {
         center: new google.maps.LatLng(lat, long),
         zoom: 15,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
+    console.log("2",lat,long);
     var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 }
 
@@ -115,3 +82,30 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     );
     infoWindow.open(map);
 }
+function drawShape(coords) {
+  console.log("Inside Draw Shape");
+
+  var bounds = new google.maps.LatLngBounds();
+  for (var i = 0; i < coords.length; i++) {
+    console.log("The coords are",coords);
+    var polygonCoords = [];
+    for (var j = 0; j < coords[i].length; j++) {
+      console.log(coords[i][j][1], coords[i][j][0]);
+      var pt = new google.maps.LatLng(coords[i][j][1], coords[i][j][0]);
+      bounds.extend(pt);
+      polygonCoords.push(pt);
+    }
+    // Construct the polygon.
+    var polygon = new google.maps.Polygon({
+      paths: polygonCoords,
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+      map: map
+    });
+  }
+  map.fitBounds(bounds);
+}
+
