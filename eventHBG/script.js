@@ -42,16 +42,15 @@ function addToTable(keysArray, objectToTR) {
         tableData.setAttribute('id', tableId);
         tableData.setAttribute('border', '1');
         tableData.setAttribute('caption', tableId);
-//        tableData.setAttribute('', tableId);
         var rowHeader = tableData.insertRow(0);
         var cell = [];
         switch (tableId) {
             case "status":
-                if (keysArray.length == 20) {
+                if (keysArray.length >= 20) {
                     i=0; cell[i] = rowHeader.insertCell(i); cell[i].innerHTML = "<b>Title, Event Category<b>";cell[i].style.width = '200px';
                     i++; cell[i] = rowHeader.insertCell(i); cell[i].innerHTML = "<b>Start Date, End Date<b>";cell[i].style.width = '150px';
                     i++; cell[i] = rowHeader.insertCell(i); cell[i].innerHTML = "<b>Booking Link<b>";cell[i].style.width = '200px';
-                    i++; cell[i] = rowHeader.insertCell(i); cell[i].innerHTML = "<b>Seated Price Range, Stading Price Range<b>";cell[i].style.width = '150px';
+                    i++; cell[i] = rowHeader.insertCell(i); cell[i].innerHTML = "<b>Seated Price Range, Standing Price Range<b>";cell[i].style.width = '150px';
                 }
                 break;
             case "organizers":
@@ -59,16 +58,17 @@ function addToTable(keysArray, objectToTR) {
                 i++; cell[i] = rowHeader.insertCell(i); cell[i].innerHTML = "<b>Start Date, End Date<b>"; cell[i].style.width = '150px';
                 i++; cell[i] = rowHeader.insertCell(i); cell[i].innerHTML = "<b>Phone, Email<b>";cell[i].style.width = '200px';
                 i++; cell[i] = rowHeader.insertCell(i); cell[i].innerHTML = "<b>Event Link, Facebook, Organizers Link<b>";cell[i].style.width = '200px';
-                i++; cell[i] = rowHeader.insertCell(i); cell[i].innerHTML = "<b>Seated Price Range, Stading Price Range<b>";cell[i].style.width = '150px';
+                i++; cell[i] = rowHeader.insertCell(i); cell[i].innerHTML = "<b>Seated Price Range, Standing Price Range<b>";cell[i].style.width = '150px';
                 break;
             default:
                 break;
         }
         const h2 = document.createElement('h2');
         h2.style.color = "blue";
-        h2.textContent = "Evenamong";
+        h2.textContent = "Evenemang";
         maindiv.appendChild(h2);
         maindiv.appendChild(tableData);
+        console.log("Here", tableId);
     }
 
     var row = tableData.insertRow(tableData.length);
@@ -82,7 +82,7 @@ function addToTable(keysArray, objectToTR) {
 */
     switch (tableId) {
         case "status":
-            if (keysArray.length == 20) {
+            if (keysArray.length >= 20) {
                 i=0; cell[i] = row.insertCell(i); cell[i].innerHTML = JSON.parse(objectToTR.title).plain_text
                                                               + ", "+ objectToTR.event_categories;
                                                               cell[i].style.width = '200px';
