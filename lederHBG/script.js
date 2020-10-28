@@ -32,11 +32,6 @@ request.onload = function() {
                 lat = item.fields.geo_point_2d[0];
                 long =  item.fields.geo_point_2d[1];
 
-                canvas = document.createElement('canvas');
-                canvas.setAttribute('id', 'canvas');
-                canvas.setAttribute('class', 'canvas1');
-                mapDiv.appendChild(canvas);
-                ctx = canvas.getContext("2d");
                 showMapLoc();
                 drawShape(item.fields.geo_shape.coordinates);
             });
